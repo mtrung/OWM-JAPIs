@@ -207,15 +207,15 @@ public class OpenWeatherMap {
         owmProxy.setPass(pass);
     }
 
-    public CurrentWeather currentWeatherByCityName(String cityName)
+    public CurrentWeather currentWeatherByCityName(String cityName, String extraParam)
             throws IOException, JSONException {
-        String response = owmResponse.currentWeatherByCityName(cityName);
+        String response = owmResponse.currentWeatherByCityName(cityName, extraParam);
         return this.currentWeatherFromRawResponse(response);
     }
 
-    public CurrentWeather currentWeatherByCityName(String cityName, String countryCode)
+    public CurrentWeather currentWeatherByCityCountry(String cityName, String countryCode)
             throws IOException, JSONException {
-        String response = owmResponse.currentWeatherByCityName(cityName, countryCode);
+        String response = owmResponse.currentWeatherByCityCountry(cityName, countryCode);
         return this.currentWeatherFromRawResponse(response);
     }
 
@@ -225,9 +225,9 @@ public class OpenWeatherMap {
         return this.currentWeatherFromRawResponse(response);
     }
 
-    public CurrentWeather currentWeatherByCoordinates(float latitude, float longitude)
+    public CurrentWeather currentWeatherByCoordinates(float latitude, float longitude, String extraParam)
             throws JSONException {
-        String response = owmResponse.currentWeatherByCoordinates(latitude, longitude);
+        String response = owmResponse.currentWeatherByCoordinates(latitude, longitude, extraParam);
         return this.currentWeatherFromRawResponse(response);
     }
 
@@ -621,12 +621,13 @@ public class OpenWeatherMap {
         /*
         Responses for current weather
          */
-        public String currentWeatherByCityName(String cityName) throws UnsupportedEncodingException {
+        public String currentWeatherByCityName(String cityName, String extraParam) throws UnsupportedEncodingException {
             String address = owmAddress.currentWeatherByCityName(cityName);
+            if (extraParam != null) address += extraParam;
             return httpGET(address);
         }
 
-        public String currentWeatherByCityName(String cityName, String countryCode) throws UnsupportedEncodingException {
+        public String currentWeatherByCityCountry(String cityName, String countryCode) throws UnsupportedEncodingException {
             String address = owmAddress.currentWeatherByCityName(cityName, countryCode);
             return httpGET(address);
         }
@@ -636,8 +637,9 @@ public class OpenWeatherMap {
             return httpGET(address);
         }
 
-        public String currentWeatherByCoordinates(float latitude, float longitude) {
+        public String currentWeatherByCoordinates(float latitude, float longitude, String extraParam) {
             String address = owmAddress.currentWeatherByCoordinates(latitude, longitude);
+            if (extraParam != null) address += extraParam;
             return httpGET(address);
         }
 
@@ -716,6 +718,10 @@ public class OpenWeatherMap {
                 connection.setDoInput(true);
                 connection.setDoOutput(false);
                 connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+
+                connection.setConnectTimeout(5000);
+                connection.addRequestProperty("Cache-Control", "no-cache");
+
                 connection.connect();
 
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -767,7 +773,8 @@ public class OpenWeatherMap {
                     return null;
                 }
             } catch (IOException e) {
-                System.err.println("Error: " + e.getMessage());
+                System.err.println("Connection Error: " + e.getMessage());
+                exceptionErrorStr = e.getMessage();
                 response = null;
             } finally {
                 if (connection != null) {
@@ -778,4 +785,6 @@ public class OpenWeatherMap {
             return response;
         }
     }
+
+    static public String exceptionErrorStr;
 }
