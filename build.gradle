@@ -5,8 +5,8 @@ apply plugin: 'signing'
 sourceCompatibility = 1.5
 
 group = 'net.aksingh'
-archivesBaseName = "owm-japis"
-version = '2.5.0.5'
+archivesBaseName = "tv-owm-japis"
+version = '2.5.0.5.1'
 
 repositories {
     mavenCentral()
@@ -28,24 +28,24 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+//    archives javadocJar, sourcesJar
 }
 
 signing {
-    sign configurations.archives
+    //sign configurations.archives
 }
 
 uploadArchives {
     repositories {
         mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            //beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+                //authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
             snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+                //authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
             pom.project {
