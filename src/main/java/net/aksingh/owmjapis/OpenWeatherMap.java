@@ -79,7 +79,7 @@ public class OpenWeatherMap {
     Instance Variables
      */
     private final OWMAddress owmAddress;
-    private final OWMResponse owmResponse;
+    public final OWMResponse owmResponse;
     private final OWMProxy owmProxy;
 
     /**
@@ -604,12 +604,19 @@ public class OpenWeatherMap {
         }
     }
 
+    public int getHttpRespCode() {
+        return owmResponse.httpRespCode;
+    }
+    public String getHttpExceptionStr() {
+        return owmResponse.exceptionStr;
+    }
+
     /**
      * Requests OWM.org for data and provides back the incoming response.
      *
      * @since 2.5.0.3
      */
-    private static class OWMResponse {
+    public static class OWMResponse {
         private final OWMAddress owmAddress;
         private final OWMProxy owmProxy;
 
@@ -689,6 +696,9 @@ public class OpenWeatherMap {
             return httpGET(address);
         }
 
+        public String exceptionStr;
+        public int httpRespCode;
+
         /**
          * Implements HTTP's GET method
          *
@@ -696,13 +706,14 @@ public class OpenWeatherMap {
          * @return Response if successful, else <code>null</code>
          * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP - (9.3) GET</a>
          */
-        private String httpGET(String requestAddress) {
+        public String httpGET(String requestAddress) {
             URL request;
             HttpURLConnection connection = null;
             BufferedReader reader = null;
 
             String tmpStr;
             String response = null;
+            exceptionStr = null;
 
             try {
                 request = new URL(requestAddress);
@@ -723,8 +734,9 @@ public class OpenWeatherMap {
                 connection.addRequestProperty("Cache-Control", "no-cache");
 
                 connection.connect();
+                httpRespCode = connection.getResponseCode();
 
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                if (httpRespCode == HttpURLConnection.HTTP_OK) {
                     String encoding = connection.getContentEncoding();
 
                     try {
@@ -773,8 +785,8 @@ public class OpenWeatherMap {
                     return null;
                 }
             } catch (IOException e) {
-                System.err.println("Connection Error: " + e.getMessage());
-                exceptionErrorStr = e.getMessage();
+                exceptionStr = e.getMessage();
+                System.err.println("Connection Error: " + exceptionStr);
                 response = null;
             } finally {
                 if (connection != null) {
@@ -785,6 +797,4 @@ public class OpenWeatherMap {
             return response;
         }
     }
-
-    static public String exceptionErrorStr;
 }
