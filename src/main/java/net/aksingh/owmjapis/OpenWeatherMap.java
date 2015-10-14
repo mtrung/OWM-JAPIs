@@ -60,7 +60,9 @@ public class OpenWeatherMap {
     /*
     URLs and parameters for OWM.org
      */
-    private static final String URL_API = "http://api.openweathermap.org/data/2.5/";
+    private static String URL_API = "http://api.openweathermap.org/data/2.5/";
+    private static final String URL_API_PRO = "http://pro.openweathermap.org/data/2.5/";
+
     private static final String URL_CURRENT = "weather?";
     private static final String URL_HOURLY_FORECAST = "forecast?";
     private static final String URL_DAILY_FORECAST = "forecast/daily?";
@@ -90,6 +92,12 @@ public class OpenWeatherMap {
      */
     public OpenWeatherMap(String apiKey) {
         this(Units.IMPERIAL, Language.ENGLISH, apiKey);
+    }
+    public OpenWeatherMap(String apiKey, boolean isPro) {
+        this(Units.IMPERIAL, Language.ENGLISH, apiKey);
+        if (isPro) {
+            URL_API = URL_API_PRO;
+        }
     }
 
     /**
