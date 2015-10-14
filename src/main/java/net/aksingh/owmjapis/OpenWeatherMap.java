@@ -706,6 +706,7 @@ public class OpenWeatherMap {
 
         public String exceptionStr;
         public int httpRespCode;
+        public String httpRequestUrl;
 
         /**
          * Implements HTTP's GET method
@@ -722,6 +723,7 @@ public class OpenWeatherMap {
             String tmpStr;
             String response = null;
             exceptionStr = null;
+            httpRequestUrl = requestAddress;
 
             try {
                 request = new URL(requestAddress);
