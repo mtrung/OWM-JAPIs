@@ -35,9 +35,11 @@ import java.io.IOException;
  */
 public class CurrentWeatherTest {
 
+    static String API_KEY = "5de9d165d83a576d3781c983e64b623f";
+
     public static void main(String[] args) throws IOException {
-        OpenWeatherMap owm = new OpenWeatherMap("");
-        CurrentWeather cw = owm.currentWeatherByCityName("London, UK");
+        OpenWeatherMap owm = new OpenWeatherMap(API_KEY);
+        CurrentWeather cw = owm.currentWeatherByCityName("London, UK", null);
 
         if (!cw.isValid()) {
             System.out.println("Reponse is inValid!");
